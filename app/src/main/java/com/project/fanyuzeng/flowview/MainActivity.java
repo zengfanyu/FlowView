@@ -3,6 +3,9 @@ package com.project.fanyuzeng.flowview;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+/**
+ * @author fanyuzeng
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override
