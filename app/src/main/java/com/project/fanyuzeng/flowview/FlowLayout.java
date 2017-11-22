@@ -63,7 +63,7 @@ public class FlowLayout extends ViewGroup {
             int childHeight = childView.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
 
             //当前行的宽度在加上一个子View的宽度，比父View的宽度要大，那么就需要换行了
-            if (lineWidth + childWidth > widthSize) {
+            if (lineWidth + childWidth > widthSize-getPaddingLeft()-getPaddingRight()) {
                 //宽度为当前最宽的那一行的宽度
                 width = Math.max(width, lineWidth);
                 //重置lineWidth为childWidth,因为此时换行了childWidth为第一个子View,那么此时行宽就是第一个子View的宽
@@ -88,7 +88,8 @@ public class FlowLayout extends ViewGroup {
         }
 
 
-        setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width, heightMode == MeasureSpec.EXACTLY ? heightSize : height);
+        setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width+getPaddingLeft()+getPaddingRight(),
+                heightMode == MeasureSpec.EXACTLY ? heightSize : height+getPaddingTop()+getPaddingBottom());
 
     }
 
@@ -122,7 +123,7 @@ public class FlowLayout extends ViewGroup {
             int childViewHeight = childView.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
 
             //当前行宽加上 下一个子View的宽度 大于父容器的宽度时 换行
-            if (currentLineWidth + childViewWidth > width) {
+            if (currentLineWidth + childViewWidth > width-getPaddingLeft()-getPaddingRight()) {
                 //记录上一行的高度值
                 mLineHeightValueList.add(currentLineHeight);
                 //记录上一行的所有View
@@ -144,8 +145,8 @@ public class FlowLayout extends ViewGroup {
 
 
         //设置子View的位置
-        int left = 0;
-        int top = 0;
+        int left = getPaddingLeft();
+        int top = getPaddingTop();
 
         int lineNum = mChildViewList.size();
 
