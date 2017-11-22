@@ -88,7 +88,6 @@ public class FlowLayout extends ViewGroup {
         }
 
 
-//        Log.d(TAG, ">> onMeasure >> " + "widthSize:" + widthSize + ",heightSize:" + heightSize);
         setMeasuredDimension(widthMode == MeasureSpec.EXACTLY ? widthSize : width, heightMode == MeasureSpec.EXACTLY ? heightSize : height);
 
     }
@@ -101,22 +100,21 @@ public class FlowLayout extends ViewGroup {
     /**
      * 每一行高度
      */
-    private List<Integer> mLineHeighValueList = new ArrayList<>();
+    private List<Integer> mLineHeightValueList = new ArrayList<>();
 
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         mChildViewList.clear();
-        mLineHeighValueList.clear();
+        mLineHeightValueList.clear();
         //拿到当前ViewGroup的宽度
         int width = getWidth();
 
-        int lineWidth = 0;
-        int lineHeight = 0;
-        List<View> lineViews = new ArrayList<>();
+        int currentLineWidth = 0;
+        int currentLineHeight = 0;
+        List<View> currentLineViews = new ArrayList<>();
 
         int childCount = getChildCount();
-
         for (int i = 0; i < childCount; i++) {
             View childView = getChildAt(i);
             MarginLayoutParams lp = (MarginLayoutParams) childView.getLayoutParams();
@@ -124,25 +122,25 @@ public class FlowLayout extends ViewGroup {
             int childViewHeight = childView.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
 
             //当前行宽加上 下一个子View的宽度 大于父容器的宽度时 换行
-            if (lineWidth + childViewWidth > width) {
+            if (currentLineWidth + childViewWidth > width) {
                 //记录上一行的高度值
-                mLineHeighValueList.add(lineHeight);
+                mLineHeightValueList.add(currentLineHeight);
                 //记录上一行的所有View
-                mChildViewList.add(lineViews);
+                mChildViewList.add(currentLineViews);
 
-                lineWidth = 0;
-                lineHeight = childViewHeight;
+                currentLineWidth = 0;
+                currentLineHeight = childViewHeight;
                 //重置集合
-                lineViews = new ArrayList<>();
+                currentLineViews = new ArrayList<>();
 
             }
             //不换行
-            lineWidth += childViewWidth;
-            lineHeight = Math.max(lineHeight, childViewHeight);
-            lineViews.add(childView);
+            currentLineWidth += childViewWidth;
+            currentLineHeight = Math.max(currentLineHeight, childViewHeight);
+            currentLineViews.add(childView);
         }
-        mLineHeighValueList.add(lineHeight);
-        mChildViewList.add(lineViews);
+        mLineHeightValueList.add(currentLineHeight);
+        mChildViewList.add(currentLineViews);
 
 
         //设置子View的位置
@@ -153,11 +151,11 @@ public class FlowLayout extends ViewGroup {
 
         for (int i = 0; i < lineNum; i++) {
             //当前行的所有View
-            lineViews = mChildViewList.get(i);
-            lineHeight = mLineHeighValueList.get(i);
+            currentLineViews = mChildViewList.get(i);
+            currentLineHeight = mLineHeightValueList.get(i);
 
-            for (int j = 0; j < lineViews.size(); j++) {
-                View view = lineViews.get(j);
+            for (int j = 0; j < currentLineViews.size(); j++) {
+                View view = currentLineViews.get(j);
 
                 //判断当前子View的状态
                 if (view.getVisibility() == GONE) {
@@ -179,7 +177,7 @@ public class FlowLayout extends ViewGroup {
             }//这个 for 循环是用于布局某一行的所有view
 
             left = getPaddingLeft();
-            top += lineHeight;
+            top += currentLineHeight;
         }
 
     }
